@@ -1,13 +1,20 @@
 import { fileURLToPath } from "node:url";
 
-export default function (config) {
-  return {
-    src: "__site/",
-    boilerplate: fileURLToPath(new URL("boilerplate/", import.meta.url)),
-    buildCommand: "rm __site/index.js",
-    buildOutputFolder: "__site/", // no build necessary, just send it as is
-    getDeployCommand: (deployment) => {
-      `echo "Deploying to ${deployment.host}"`;
-    },
-  };
+import { BorderlessEnvironment } from "@borderlessjs/borderless";
+
+export default class HTMLEnvironment extends BorderlessEnvironment {
+  constructor(name, config) {
+    super(
+      name,
+      config,
+      "__site",
+      "__site",
+      fileURLToPath(new URL("boilerplate/", import.meta.url)),
+      "rm __site/index.js"
+    );
+  }
+
+  getDeployCommand(deploymentConfig) {
+    `echo "Deploying static HTML to ${deploymentConfig.host}"`;
+  }
 }
